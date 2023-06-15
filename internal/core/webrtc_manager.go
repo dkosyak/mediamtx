@@ -161,8 +161,8 @@ type webRTCManager struct {
 	iceServers      []string
 	readBufferCount int
 	pathManager     *pathManager
-	metrics         *metrics
-	parent          webRTCManagerParent
+	//metrics         *metrics
+	parent webRTCManagerParent
 
 	ctx               context.Context
 	ctxCancel         func()
@@ -199,7 +199,7 @@ func newWebRTCManager(
 	readTimeout conf.StringDuration,
 	readBufferCount int,
 	pathManager *pathManager,
-	metrics *metrics,
+	//metrics *metrics,
 	parent webRTCManagerParent,
 	iceHostNAT1To1IPs []string,
 	iceUDPMuxAddress string,
@@ -208,12 +208,12 @@ func newWebRTCManager(
 	ctx, ctxCancel := context.WithCancel(parentCtx)
 
 	m := &webRTCManager{
-		allowOrigin:            allowOrigin,
-		trustedProxies:         trustedProxies,
-		iceServers:             iceServers,
-		readBufferCount:        readBufferCount,
-		pathManager:            pathManager,
-		metrics:                metrics,
+		allowOrigin:     allowOrigin,
+		trustedProxies:  trustedProxies,
+		iceServers:      iceServers,
+		readBufferCount: readBufferCount,
+		pathManager:     pathManager,
+		//metrics:                metrics,
 		parent:                 parent,
 		ctx:                    ctx,
 		ctxCancel:              ctxCancel,
@@ -276,9 +276,9 @@ func newWebRTCManager(
 	}
 	m.Log(logger.Info, str)
 
-	if m.metrics != nil {
+	/* if m.metrics != nil {
 		m.metrics.webRTCManagerSet(m)
-	}
+	} */
 
 	go m.run()
 

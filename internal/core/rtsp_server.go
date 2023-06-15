@@ -49,9 +49,9 @@ type rtspServer struct {
 	runOnConnect        string
 	runOnConnectRestart bool
 	externalCmdPool     *externalcmd.Pool
-	metrics             *metrics
-	pathManager         *pathManager
-	parent              rtspServerParent
+	//metrics             *metrics
+	pathManager *pathManager
+	parent      rtspServerParent
 
 	ctx       context.Context
 	ctxCancel func()
@@ -84,7 +84,7 @@ func newRTSPServer(
 	runOnConnect string,
 	runOnConnectRestart bool,
 	externalCmdPool *externalcmd.Pool,
-	metrics *metrics,
+	//metrics *metrics,
 	pathManager *pathManager,
 	parent rtspServerParent,
 ) (*rtspServer, error) {
@@ -99,13 +99,13 @@ func newRTSPServer(
 		runOnConnect:        runOnConnect,
 		runOnConnectRestart: runOnConnectRestart,
 		externalCmdPool:     externalCmdPool,
-		metrics:             metrics,
-		pathManager:         pathManager,
-		parent:              parent,
-		ctx:                 ctx,
-		ctxCancel:           ctxCancel,
-		conns:               make(map[*gortsplib.ServerConn]*rtspConn),
-		sessions:            make(map[*gortsplib.ServerSession]*rtspSession),
+		//metrics:             metrics,
+		pathManager: pathManager,
+		parent:      parent,
+		ctx:         ctx,
+		ctxCancel:   ctxCancel,
+		conns:       make(map[*gortsplib.ServerConn]*rtspConn),
+		sessions:    make(map[*gortsplib.ServerSession]*rtspSession),
 	}
 
 	s.srv = &gortsplib.Server{
@@ -144,13 +144,13 @@ func newRTSPServer(
 
 	s.Log(logger.Info, "listener opened on %s", printAddresses(s.srv))
 
-	if metrics != nil {
+	/* if metrics != nil {
 		if !isTLS {
 			metrics.rtspServerSet(s)
 		} else {
 			metrics.rtspsServerSet(s)
 		}
-	}
+	} */
 
 	s.wg.Add(1)
 	go s.run()
@@ -196,13 +196,13 @@ outer:
 
 	s.ctxCancel()
 
-	if s.metrics != nil {
+	/* if s.metrics != nil {
 		if !s.isTLS {
 			s.metrics.rtspServerSet(nil)
 		} else {
 			s.metrics.rtspsServerSet(nil)
 		}
-	}
+	} */
 }
 
 // OnConnOpen implements gortsplib.ServerHandlerOnConnOpen.

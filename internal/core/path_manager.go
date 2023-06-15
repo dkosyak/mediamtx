@@ -49,8 +49,8 @@ type pathManager struct {
 	udpMaxPayloadSize         int
 	pathConfs                 map[string]*conf.PathConf
 	externalCmdPool           *externalcmd.Pool
-	metrics                   *metrics
-	parent                    pathManagerParent
+	//metrics                   *metrics
+	parent pathManagerParent
 
 	ctx         context.Context
 	ctxCancel   func()
@@ -84,7 +84,7 @@ func newPathManager(
 	udpMaxPayloadSize int,
 	pathConfs map[string]*conf.PathConf,
 	externalCmdPool *externalcmd.Pool,
-	metrics *metrics,
+	//metrics *metrics,
 	parent pathManagerParent,
 ) *pathManager {
 	ctx, ctxCancel := context.WithCancel(parentCtx)
@@ -99,23 +99,23 @@ func newPathManager(
 		udpMaxPayloadSize:         udpMaxPayloadSize,
 		pathConfs:                 pathConfs,
 		externalCmdPool:           externalCmdPool,
-		metrics:                   metrics,
-		parent:                    parent,
-		ctx:                       ctx,
-		ctxCancel:                 ctxCancel,
-		paths:                     make(map[string]*path),
-		pathsByConf:               make(map[string]map[*path]struct{}),
-		chConfReload:              make(chan map[string]*conf.PathConf),
-		chPathClose:               make(chan *path),
-		chPathSourceReady:         make(chan *path),
-		chPathSourceNotReady:      make(chan *path),
-		chPathGetPathConf:         make(chan pathGetPathConfReq),
-		chDescribe:                make(chan pathDescribeReq),
-		chReaderAdd:               make(chan pathReaderAddReq),
-		chPublisherAdd:            make(chan pathPublisherAddReq),
-		chHLSManagerSet:           make(chan pathManagerHLSManager),
-		chAPIPathsList:            make(chan pathAPIPathsListReq),
-		chAPIPathsGet:             make(chan pathAPIPathsGetReq),
+		//metrics:                   metrics,
+		parent:               parent,
+		ctx:                  ctx,
+		ctxCancel:            ctxCancel,
+		paths:                make(map[string]*path),
+		pathsByConf:          make(map[string]map[*path]struct{}),
+		chConfReload:         make(chan map[string]*conf.PathConf),
+		chPathClose:          make(chan *path),
+		chPathSourceReady:    make(chan *path),
+		chPathSourceNotReady: make(chan *path),
+		chPathGetPathConf:    make(chan pathGetPathConfReq),
+		chDescribe:           make(chan pathDescribeReq),
+		chReaderAdd:          make(chan pathReaderAddReq),
+		chPublisherAdd:       make(chan pathPublisherAddReq),
+		chHLSManagerSet:      make(chan pathManagerHLSManager),
+		chAPIPathsList:       make(chan pathAPIPathsListReq),
+		chAPIPathsGet:        make(chan pathAPIPathsGetReq),
 	}
 
 	for pathConfName, pathConf := range pm.pathConfs {
@@ -124,9 +124,9 @@ func newPathManager(
 		}
 	}
 
-	if pm.metrics != nil {
+	/* if pm.metrics != nil {
 		pm.metrics.pathManagerSet(pm)
-	}
+	} */
 
 	pm.Log(logger.Debug, "path manager created")
 
@@ -313,9 +313,9 @@ outer:
 
 	pm.ctxCancel()
 
-	if pm.metrics != nil {
+	/* if pm.metrics != nil {
 		pm.metrics.pathManagerSet(nil)
-	}
+	} */
 }
 
 func (pm *pathManager) createPath(
