@@ -38,7 +38,7 @@ type Core struct {
 	//	rtmpsServer     *rtmpServer
 	//	hlsManager      *hlsManager
 	webRTCManager *webRTCManager
-	//	api           *api
+	//api           *api
 	confWatcher *confwatcher.ConfWatcher
 
 	// in

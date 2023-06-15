@@ -37,23 +37,23 @@ func New(
 	case *formats.H265:
 		return newH265(udpMaxPayloadSize, forma, generateRTPPackets, log)
 
-	case *formats.VP8:
-		return newVP8(udpMaxPayloadSize, forma, generateRTPPackets, log)
+		/* 	case *formats.VP8:
+		   		return newVP8(udpMaxPayloadSize, forma, generateRTPPackets, log)
 
-	case *formats.VP9:
-		return newVP9(udpMaxPayloadSize, forma, generateRTPPackets, log)
+		   	case *formats.VP9:
+		   		return newVP9(udpMaxPayloadSize, forma, generateRTPPackets, log)
 
-	case *formats.AV1:
-		return newAV1(udpMaxPayloadSize, forma, generateRTPPackets, log)
+		   	case *formats.AV1:
+		   		return newAV1(udpMaxPayloadSize, forma, generateRTPPackets, log) */
 
-	case *formats.MPEG2Audio:
-		return newMPEG2Audio(udpMaxPayloadSize, forma, generateRTPPackets, log)
+		/* 	case *formats.MPEG2Audio:
+		   		return newMPEG2Audio(udpMaxPayloadSize, forma, generateRTPPackets, log)
 
-	case *formats.MPEG4AudioGeneric:
-		return newMPEG4AudioGeneric(udpMaxPayloadSize, forma, generateRTPPackets, log)
+		   	case *formats.MPEG4AudioGeneric:
+		   		return newMPEG4AudioGeneric(udpMaxPayloadSize, forma, generateRTPPackets, log)
 
-	case *formats.MPEG4AudioLATM:
-		return newMPEG4AudioLATM(udpMaxPayloadSize, forma, generateRTPPackets, log)
+		   	case *formats.MPEG4AudioLATM:
+		   		return newMPEG4AudioLATM(udpMaxPayloadSize, forma, generateRTPPackets, log) */
 
 	case *formats.Opus:
 		return newOpus(udpMaxPayloadSize, forma, generateRTPPackets, log)

@@ -17,11 +17,10 @@ import (
 	"github.com/bluenviron/gortsplib/v3/pkg/formats"
 	"github.com/bluenviron/gortsplib/v3/pkg/media"
 	"github.com/bluenviron/mediacommon/pkg/codecs/mpeg4audio"
+	"github.com/notedit/rtmp/format/rtmp"
 	"github.com/pion/rtp"
 	"github.com/stretchr/testify/require"
-
-	"github.com/bluenviron/mediamtx/internal/rtmp"
-)
+	/* 	"github.com/bluenviron/mediamtx/internal/rtmp" */)
 
 var testFormatH264 = &formats.H264{
 	PayloadTyp: 96,

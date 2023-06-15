@@ -69,26 +69,26 @@ func newSourceStatic(
 			readBufferCount,
 			s)
 
-	case strings.HasPrefix(cnf.Source, "rtmp://") ||
-		strings.HasPrefix(cnf.Source, "rtmps://"):
-		s.impl = newRTMPSource(
-			readTimeout,
-			writeTimeout,
-			s)
+	/* case strings.HasPrefix(cnf.Source, "rtmp://") ||
+	strings.HasPrefix(cnf.Source, "rtmps://"):
+	s.impl = newRTMPSource(
+		readTimeout,
+		writeTimeout,
+		s) */
 
-	case strings.HasPrefix(cnf.Source, "http://") ||
-		strings.HasPrefix(cnf.Source, "https://"):
-		s.impl = newHLSSource(
-			s)
+	/* case strings.HasPrefix(cnf.Source, "http://") ||
+	strings.HasPrefix(cnf.Source, "https://"):
+	s.impl = newHLSSource(
+		s) */
 
 	case strings.HasPrefix(cnf.Source, "udp://"):
 		s.impl = newUDPSource(
 			readTimeout,
 			s)
 
-	case cnf.Source == "rpiCamera":
+		/* case cnf.Source == "rpiCamera":
 		s.impl = newRPICameraSource(
-			s)
+			s)*/
 	}
 
 	return s

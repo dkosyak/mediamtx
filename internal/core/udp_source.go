@@ -10,7 +10,6 @@ import (
 	"github.com/bluenviron/gortsplib/v3/pkg/formats"
 	"github.com/bluenviron/gortsplib/v3/pkg/media"
 	"github.com/bluenviron/mediacommon/pkg/codecs/h264"
-	"github.com/bluenviron/mediacommon/pkg/codecs/mpeg4audio"
 	"github.com/bluenviron/mediacommon/pkg/formats/mpegts"
 	"golang.org/x/net/ipv4"
 
@@ -242,37 +241,37 @@ func (s *udpSource) run(ctx context.Context, cnf *conf.PathConf, _ chan *conf.Pa
 						})
 					}
 
-				case *mpegts.CodecMPEG4Audio:
-					medi = &media.Media{
-						Type: media.TypeAudio,
-						Formats: []formats.Format{&formats.MPEG4Audio{
-							PayloadTyp:       96,
-							SizeLength:       13,
-							IndexLength:      3,
-							IndexDeltaLength: 3,
-							Config:           &tcodec.Config,
-						}},
+				/* case *mpegts.CodecMPEG4Audio:
+				medi = &media.Media{
+					Type: media.TypeAudio,
+					Formats: []formats.Format{&formats.MPEG4Audio{
+						PayloadTyp:       96,
+						SizeLength:       13,
+						IndexLength:      3,
+						IndexDeltaLength: 3,
+						Config:           &tcodec.Config,
+					}},
+				}
+
+				mediaCallbacks[track.ES.ElementaryPID] = func(pts time.Duration, data []byte) {
+					var pkts mpeg4audio.ADTSPackets
+					err := pkts.Unmarshal(data)
+					if err != nil {
+						s.Log(logger.Warn, "%v", err)
+						return
 					}
 
-					mediaCallbacks[track.ES.ElementaryPID] = func(pts time.Duration, data []byte) {
-						var pkts mpeg4audio.ADTSPackets
-						err := pkts.Unmarshal(data)
-						if err != nil {
-							s.Log(logger.Warn, "%v", err)
-							return
-						}
-
-						aus := make([][]byte, len(pkts))
-						for i, pkt := range pkts {
-							aus[i] = pkt.AU
-						}
-
-						stream.writeUnit(medi, medi.Formats[0], &formatprocessor.UnitMPEG4AudioGeneric{
-							PTS: pts,
-							AUs: aus,
-							NTP: time.Now(),
-						})
+					aus := make([][]byte, len(pkts))
+					for i, pkt := range pkts {
+						aus[i] = pkt.AU
 					}
+
+					stream.writeUnit(medi, medi.Formats[0], &formatprocessor.UnitMPEG4AudioGeneric{
+						PTS: pts,
+						AUs: aus,
+						NTP: time.Now(),
+					})
+				} */
 
 				case *mpegts.CodecOpus:
 					medi = &media.Media{

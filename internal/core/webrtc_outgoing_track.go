@@ -6,10 +6,7 @@ import (
 	"time"
 
 	"github.com/bluenviron/gortsplib/v3/pkg/formats"
-	"github.com/bluenviron/gortsplib/v3/pkg/formats/rtpav1"
 	"github.com/bluenviron/gortsplib/v3/pkg/formats/rtph264"
-	"github.com/bluenviron/gortsplib/v3/pkg/formats/rtpvp8"
-	"github.com/bluenviron/gortsplib/v3/pkg/formats/rtpvp9"
 	"github.com/bluenviron/gortsplib/v3/pkg/media"
 	"github.com/bluenviron/gortsplib/v3/pkg/ringbuffer"
 	"github.com/pion/webrtc/v3"
@@ -29,7 +26,7 @@ func newWebRTCOutgoingTrackVideo(medias media.Medias) (*webRTCOutgoingTrack, err
 	var av1Format *formats.AV1
 	videoMedia := medias.FindFormat(&av1Format)
 
-	if videoMedia != nil {
+	/* if videoMedia != nil {
 		webRTCTrak, err := webrtc.NewTrackLocalStaticRTP(
 			webrtc.RTPCodecCapability{
 				MimeType:  webrtc.MimeTypeAV1,
@@ -165,7 +162,7 @@ func newWebRTCOutgoingTrackVideo(medias media.Medias) (*webRTCOutgoingTrack, err
 				return nil
 			},
 		}, nil
-	}
+	} */
 
 	var h264Format *formats.H264
 	videoMedia = medias.FindFormat(&h264Format)
