@@ -119,10 +119,28 @@ class WHEPClient {
             iceServers: linkToIceServers(res.headers.get('Link')),
         });
 
-        const direction = "sendrecv";
+        const direction = "recvonly";
         this.pc.addTransceiver("video", { direction });
-        this.pc.addTransceiver("audio", { direction });
+        //this.pc.addTransceiver("audio", { direction });
 
+        let tcvr = this.pc.getTransceivers()[0];
+            const codecs = RTCRtpReceiver.getCapabilities('video').codecs;
+            let h264_codecs = [];
+            // iterate over supported codecs and pull out the codecs we want
+            for(let i = 0; i < codecs.length; i++)
+            {
+                console.log(codecs[i].mimeType)
+            if(codecs[i].mimeType == "video/VP9" || codecs[i].mimeType == "video/VP8" || codecs[i].mimeType == "video/rtx" || codecs[i].mimeType == "video/AV1")
+            {
+                continue;
+            }
+            h264_codecs.push(codecs[i]);
+            }
+            if (tcvr.setCodecPreferences!=undefined){
+                tcvr.setCodecPreferences(h264_codecs);
+            }
+
+console.log(h264_codecs);
         this.pc.onicecandidate = (evt) => this.onLocalCandidate(evt);
         this.pc.oniceconnectionstatechange = () => this.onConnectionState();
 
@@ -131,7 +149,7 @@ class WHEPClient {
             document.getElementById("video").srcObject = evt.streams[0];
         };
 
-        this.pc.createOffer()
+        this.pc.createOffer({offerToReceiveAudio:false, offerToReceiveVideo:true})
             .then((desc) => {
                 this.offerData = parseOffer(desc.sdp);
                 this.pc.setLocalDescription(desc);

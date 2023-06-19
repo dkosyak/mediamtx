@@ -11,7 +11,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/bluenviron/gohlslib"
 	"github.com/bluenviron/gortsplib/v3"
 	"github.com/bluenviron/gortsplib/v3/pkg/headers"
 
@@ -113,28 +112,28 @@ type Conf struct {
 	AuthMethods       AuthMethods `json:"authMethods"`
 
 	// RTMP
-	RTMPDisable    bool       `json:"rtmpDisable"`
-	RTMPAddress    string     `json:"rtmpAddress"`
-	RTMPEncryption Encryption `json:"rtmpEncryption"`
-	RTMPSAddress   string     `json:"rtmpsAddress"`
-	RTMPServerKey  string     `json:"rtmpServerKey"`
-	RTMPServerCert string     `json:"rtmpServerCert"`
+	/* 	RTMPDisable    bool       `json:"rtmpDisable"`
+	   	RTMPAddress    string     `json:"rtmpAddress"`
+	   	RTMPEncryption Encryption `json:"rtmpEncryption"`
+	   	RTMPSAddress   string     `json:"rtmpsAddress"`
+	   	RTMPServerKey  string     `json:"rtmpServerKey"`
+	   	RTMPServerCert string     `json:"rtmpServerCert"` */
 
 	// HLS
-	HLSDisable         bool           `json:"hlsDisable"`
-	HLSAddress         string         `json:"hlsAddress"`
-	HLSEncryption      bool           `json:"hlsEncryption"`
-	HLSServerKey       string         `json:"hlsServerKey"`
-	HLSServerCert      string         `json:"hlsServerCert"`
-	HLSAlwaysRemux     bool           `json:"hlsAlwaysRemux"`
-	HLSVariant         HLSVariant     `json:"hlsVariant"`
-	HLSSegmentCount    int            `json:"hlsSegmentCount"`
-	HLSSegmentDuration StringDuration `json:"hlsSegmentDuration"`
-	HLSPartDuration    StringDuration `json:"hlsPartDuration"`
-	HLSSegmentMaxSize  StringSize     `json:"hlsSegmentMaxSize"`
-	HLSAllowOrigin     string         `json:"hlsAllowOrigin"`
-	HLSTrustedProxies  IPsOrCIDRs     `json:"hlsTrustedProxies"`
-	HLSDirectory       string         `json:"hlsDirectory"`
+	/* 	HLSDisable         bool           `json:"hlsDisable"`
+	   	HLSAddress         string         `json:"hlsAddress"`
+	   	HLSEncryption      bool           `json:"hlsEncryption"`
+	   	HLSServerKey       string         `json:"hlsServerKey"`
+	   	HLSServerCert      string         `json:"hlsServerCert"`
+	   	HLSAlwaysRemux     bool           `json:"hlsAlwaysRemux"`
+	   	HLSVariant         HLSVariant     `json:"hlsVariant"`
+	   	HLSSegmentCount    int            `json:"hlsSegmentCount"`
+	   	HLSSegmentDuration StringDuration `json:"hlsSegmentDuration"`
+	   	HLSPartDuration    StringDuration `json:"hlsPartDuration"`
+	   	HLSSegmentMaxSize  StringSize     `json:"hlsSegmentMaxSize"`
+	   	HLSAllowOrigin     string         `json:"hlsAllowOrigin"`
+	   	HLSTrustedProxies  IPsOrCIDRs     `json:"hlsTrustedProxies"`
+	   	HLSDirectory       string         `json:"hlsDirectory"` */
 
 	// WebRTC
 	WebRTCDisable           bool       `json:"webrtcDisable"`
@@ -305,19 +304,19 @@ func (conf *Conf) UnmarshalJSON(b []byte) error {
 	conf.AuthMethods = AuthMethods{headers.AuthBasic}
 
 	// RTMP
-	conf.RTMPAddress = ":1935"
-	conf.RTMPSAddress = ":1936"
+	/* 	conf.RTMPAddress = ":1935"
+	   	conf.RTMPSAddress = ":1936"
 
-	// HLS
-	conf.HLSAddress = ":8888"
-	conf.HLSServerKey = "server.key"
-	conf.HLSServerCert = "server.crt"
-	conf.HLSVariant = HLSVariant(gohlslib.MuxerVariantLowLatency)
-	conf.HLSSegmentCount = 7
-	conf.HLSSegmentDuration = 1 * StringDuration(time.Second)
-	conf.HLSPartDuration = 200 * StringDuration(time.Millisecond)
-	conf.HLSSegmentMaxSize = 50 * 1024 * 1024
-	conf.HLSAllowOrigin = "*"
+	   	// HLS
+	   	conf.HLSAddress = ":8888"
+	   	conf.HLSServerKey = "server.key"
+	   	conf.HLSServerCert = "server.crt"
+	   	conf.HLSVariant = HLSVariant(gohlslib.MuxerVariantLowLatency)
+	   	conf.HLSSegmentCount = 7
+	   	conf.HLSSegmentDuration = 1 * StringDuration(time.Second)
+	   	conf.HLSPartDuration = 200 * StringDuration(time.Millisecond)
+	   	conf.HLSSegmentMaxSize = 50 * 1024 * 1024
+	   	conf.HLSAllowOrigin = "*" */
 
 	// WebRTC
 	conf.WebRTCAddress = ":8889"

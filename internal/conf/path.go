@@ -206,6 +206,20 @@ func (pconf *PathConf) check(conf *Conf, name string) error {
 		if ip == nil {
 			return fmt.Errorf("'%s' is not a valid IP", host)
 		}
+	case strings.HasPrefix(pconf.Source, "h264://"):
+		if pconf.Regexp != nil {
+			return fmt.Errorf("a path with a regular expression (or path 'all') cannot have a HLS source. use another path")
+		}
+
+		host, _, err := net.SplitHostPort(pconf.Source[len("h264://"):])
+		if err != nil {
+			return fmt.Errorf("'%s' is not a valid UDP URL", pconf.Source)
+		}
+
+		ip := net.ParseIP(host)
+		if ip == nil {
+			return fmt.Errorf("'%s' is not a valid IP", host)
+		}
 
 	case pconf.Source == "redirect":
 		if pconf.SourceRedirect == "" {
@@ -334,6 +348,7 @@ func (pconf PathConf) HasStaticSource() bool {
 		strings.HasPrefix(pconf.Source, "http://") ||
 		strings.HasPrefix(pconf.Source, "https://") ||
 		strings.HasPrefix(pconf.Source, "udp://") ||
+		strings.HasPrefix(pconf.Source, "h264://") ||
 		pconf.Source == "rpiCamera"
 }
 

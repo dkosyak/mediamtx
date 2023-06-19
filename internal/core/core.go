@@ -11,6 +11,7 @@ import (
 	"github.com/alecthomas/kong"
 	"github.com/gin-gonic/gin"
 
+	"github.com/bluenviron/gortsplib/v3"
 	"github.com/bluenviron/mediamtx/internal/conf"
 	"github.com/bluenviron/mediamtx/internal/confwatcher"
 	"github.com/bluenviron/mediamtx/internal/externalcmd"
@@ -32,7 +33,7 @@ type Core struct {
 	//	metrics         *metrics
 	//	pprof           *pprof
 	pathManager *pathManager
-	//	rtspServer  *rtspServer
+	rtspServer  *rtspServer
 	//	rtspsServer     *rtspServer
 	//	rtmpServer      *rtmpServer
 	//	rtmpsServer     *rtmpServer
@@ -254,7 +255,7 @@ func (p *Core) createResources(initial bool) error {
 		)
 	}
 
-	/* if !p.conf.RTSPDisable &&
+	if !p.conf.RTSPDisable &&
 		(p.conf.Encryption == conf.EncryptionNo ||
 			p.conf.Encryption == conf.EncryptionOptional) {
 		if p.rtspServer == nil {
@@ -290,7 +291,7 @@ func (p *Core) createResources(initial bool) error {
 				return err
 			}
 		}
-	} */
+	}
 
 	/* if !p.conf.RTSPDisable &&
 		(p.conf.Encryption == conf.EncryptionStrict ||
@@ -497,26 +498,26 @@ func (p *Core) closeResources(newConf *conf.Conf, calledByAPI bool) {
 		p.pathManager.confReload(newConf.Paths)
 	}
 
-	/* closeRTSPServer := newConf == nil ||
-	newConf.RTSPDisable != p.conf.RTSPDisable ||
-	newConf.Encryption != p.conf.Encryption ||
-	newConf.RTSPAddress != p.conf.RTSPAddress ||
-	!reflect.DeepEqual(newConf.AuthMethods, p.conf.AuthMethods) ||
-	newConf.ReadTimeout != p.conf.ReadTimeout ||
-	newConf.WriteTimeout != p.conf.WriteTimeout ||
-	newConf.ReadBufferCount != p.conf.ReadBufferCount ||
-	!reflect.DeepEqual(newConf.Protocols, p.conf.Protocols) ||
-	newConf.RTPAddress != p.conf.RTPAddress ||
-	newConf.RTCPAddress != p.conf.RTCPAddress ||
-	newConf.MulticastIPRange != p.conf.MulticastIPRange ||
-	newConf.MulticastRTPPort != p.conf.MulticastRTPPort ||
-	newConf.MulticastRTCPPort != p.conf.MulticastRTCPPort ||
-	newConf.RTSPAddress != p.conf.RTSPAddress ||
-	!reflect.DeepEqual(newConf.Protocols, p.conf.Protocols) ||
-	newConf.RunOnConnect != p.conf.RunOnConnect ||
-	newConf.RunOnConnectRestart != p.conf.RunOnConnectRestart ||
-	closeMetrics ||
-	closePathManager */
+	closeRTSPServer := newConf == nil ||
+		newConf.RTSPDisable != p.conf.RTSPDisable ||
+		newConf.Encryption != p.conf.Encryption ||
+		newConf.RTSPAddress != p.conf.RTSPAddress ||
+		!reflect.DeepEqual(newConf.AuthMethods, p.conf.AuthMethods) ||
+		newConf.ReadTimeout != p.conf.ReadTimeout ||
+		newConf.WriteTimeout != p.conf.WriteTimeout ||
+		newConf.ReadBufferCount != p.conf.ReadBufferCount ||
+		!reflect.DeepEqual(newConf.Protocols, p.conf.Protocols) ||
+		newConf.RTPAddress != p.conf.RTPAddress ||
+		newConf.RTCPAddress != p.conf.RTCPAddress ||
+		newConf.MulticastIPRange != p.conf.MulticastIPRange ||
+		newConf.MulticastRTPPort != p.conf.MulticastRTPPort ||
+		newConf.MulticastRTCPPort != p.conf.MulticastRTCPPort ||
+		newConf.RTSPAddress != p.conf.RTSPAddress ||
+		!reflect.DeepEqual(newConf.Protocols, p.conf.Protocols) ||
+		newConf.RunOnConnect != p.conf.RunOnConnect ||
+		newConf.RunOnConnectRestart != p.conf.RunOnConnectRestart ||
+		closeMetrics ||
+		closePathManager
 
 	/* closeRTSPSServer := newConf == nil ||
 	newConf.RTSPDisable != p.conf.RTSPDisable ||
@@ -631,10 +632,10 @@ func (p *Core) closeResources(newConf *conf.Conf, calledByAPI bool) {
 		p.rtspsServer = nil
 	} */
 
-	/* if closeRTSPServer && p.rtspServer != nil {
+	if closeRTSPServer && p.rtspServer != nil {
 		p.rtspServer.close()
 		p.rtspServer = nil
-	} */
+	}
 
 	if closePathManager && p.pathManager != nil {
 		p.pathManager.close()

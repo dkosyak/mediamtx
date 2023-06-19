@@ -89,6 +89,11 @@ func newSourceStatic(
 		/* case cnf.Source == "rpiCamera":
 		s.impl = newRPICameraSource(
 			s)*/
+
+	case strings.HasPrefix(cnf.Source, "h264://"):
+		s.impl = newH264UDPSource(
+			readTimeout,
+			s)
 	}
 
 	return s
