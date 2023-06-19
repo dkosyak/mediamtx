@@ -219,27 +219,27 @@ func (s *udpSource) run(ctx context.Context, cnf *conf.PathConf, _ chan *conf.Pa
 						})
 					}
 
-				case *mpegts.CodecH265:
-					medi = &media.Media{
-						Type: media.TypeVideo,
-						Formats: []formats.Format{&formats.H265{
-							PayloadTyp: 96,
-						}},
+				/* case *mpegts.CodecH265:
+				medi = &media.Media{
+					Type: media.TypeVideo,
+					Formats: []formats.Format{&formats.H265{
+						PayloadTyp: 96,
+					}},
+				}
+
+				mediaCallbacks[track.ES.ElementaryPID] = func(pts time.Duration, data []byte) {
+					au, err := h264.AnnexBUnmarshal(data)
+					if err != nil {
+						s.Log(logger.Warn, "%v", err)
+						return
 					}
 
-					mediaCallbacks[track.ES.ElementaryPID] = func(pts time.Duration, data []byte) {
-						au, err := h264.AnnexBUnmarshal(data)
-						if err != nil {
-							s.Log(logger.Warn, "%v", err)
-							return
-						}
-
-						stream.writeUnit(medi, medi.Formats[0], &formatprocessor.UnitH265{
-							PTS: pts,
-							AU:  au,
-							NTP: time.Now(),
-						})
-					}
+					stream.writeUnit(medi, medi.Formats[0], &formatprocessor.UnitH265{
+						PTS: pts,
+						AU:  au,
+						NTP: time.Now(),
+					})
+				} */
 
 				/* case *mpegts.CodecMPEG4Audio:
 				medi = &media.Media{
