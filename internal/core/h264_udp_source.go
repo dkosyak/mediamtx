@@ -253,8 +253,8 @@ func (s *h264udpSource) run(ctx context.Context, cnf *conf.PathConf, _ chan *con
 						timedec = mpegts.NewTimeDecoder(time.Now().UnixMilli())
 						pts = 0
 					} else {
-						//pts = timedec.Decode(time.Now().UnixMilli())
-						pts = time.Duration(1*counter+1/30*90000) * time.Millisecond
+						//pts = timedec.Decode(time.Now().UnixMicro())
+						//pts = time.Duration(1*counter+1/30*90000) * time.Millisecond
 					}
 					//pts = timedec.Decode(time.Now().UnixMilli())
 					s.Log(logger.Info, "pts %d", pts)
@@ -262,6 +262,7 @@ func (s *h264udpSource) run(ctx context.Context, cnf *conf.PathConf, _ chan *con
 					//cb(time.Duration(counter)*time.Millisecond, packetBuffer[0:lastIndex])
 					counter++
 					packetBuffer = packetBuffer[lastIndex:]
+					pts = timedec.Decode(time.Now().UnixMilli())
 				} else {
 					//s.Log(logger.Info, "skipping")
 				}
