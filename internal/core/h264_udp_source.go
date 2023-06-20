@@ -1,6 +1,7 @@
 package core
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"net"
@@ -220,28 +221,50 @@ func (s *h264udpSource) run(ctx context.Context, cnf *conf.PathConf, _ chan *con
 			s.Log(logger.Info, "ready: %s", sourceMediaInfo(medias))
 
 			stream = res.stream
+			var pts time.Duration
 
+			startH264Header := [3]byte{0x00, 0x00, 0x01}
+			//var start int = 0
+			//var end int = 0
+			cb, _ := mediaCallbacks[12345]
+			/* if !ok {
+				continue
+			} */
+			packetBuffer := make([]byte, (0))
 			for {
 				pc.SetReadDeadline(time.Now().Add(time.Duration(s.readTimeout)))
-				input := make([]byte, (1024 * 20))
+				input := make([]byte, (1024 * 10))
 				n, _, err := pc.ReadFrom(input[0:])
+
 				if err != nil {
 					return err
 				}
 
-				cb, ok := mediaCallbacks[12345]
-				if !ok {
-					continue
-				}
-				//dts := time.Duration(3000*fNumber) * time.Microsecond
-				var pts time.Duration
-				if timedec == nil {
-					timedec = mpegts.NewTimeDecoder(time.Now().UnixMilli())
-					pts = 0
-				} else {
+				//cb(pts, input[0:n])
+				//continue
+
+				//split := bytes.Split(packetBuffer[0:], startH264Header[0:])
+				//s.Log(logger.Info, "split count %d", len(split))
+				packetBuffer = append(packetBuffer, input[0:n]...)
+				lastIndex := bytes.LastIndex(packetBuffer[0:], startH264Header[0:])
+				if lastIndex > 1 {
+					if timedec == nil {
+						timedec = mpegts.NewTimeDecoder(time.Now().UnixMilli())
+						pts = 0
+					} else {
+						pts = timedec.Decode(time.Now().UnixMilli())
+					}
 					pts = timedec.Decode(time.Now().UnixMilli())
+					//s.Log(logger.Info, "pts %d", pts)
+					cb(pts, packetBuffer[0:lastIndex])
+					packetBuffer = packetBuffer[lastIndex:]
+				} else {
+					//s.Log(logger.Info, "skipping")
 				}
-				cb(pts, input[0:n])
+
+				/* copy(packetBuffer[end:], input[0:n])
+				end += n
+				cb(pts, packetBuffer[0:end]) */
 
 				/* var data *DemuxerData
 				//data, err := dem.NextData()
