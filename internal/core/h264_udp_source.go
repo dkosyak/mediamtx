@@ -9,6 +9,7 @@ import (
 	"github.com/bluenviron/gortsplib/v3/pkg/formats"
 	"github.com/bluenviron/gortsplib/v3/pkg/media"
 	"github.com/bluenviron/mediacommon/pkg/codecs/h264"
+	"github.com/bluenviron/mediacommon/pkg/formats/mpegts"
 	"golang.org/x/net/ipv4"
 
 	"github.com/bluenviron/mediamtx/internal/conf"
@@ -160,7 +161,7 @@ func (s *h264udpSource) run(ctx context.Context, cnf *conf.PathConf, _ chan *con
 	astits.DemuxerOptPacketSize(188)) */
 
 	readerErr := make(chan error)
-
+	var timedec *mpegts.TimeDecoder
 	go func() {
 		readerErr <- func() error {
 			pc.SetReadDeadline(time.Now().Add(time.Duration(s.readTimeout)))
@@ -184,13 +185,14 @@ func (s *h264udpSource) run(ctx context.Context, cnf *conf.PathConf, _ chan *con
 				Type: media.TypeVideo,
 				Formats: []formats.Format{&formats.H264{
 					PayloadTyp:        96,
-					PacketizationMode: 0,
+					PacketizationMode: 1,
 				}},
 			}
 
 			mediaCallbacks[12345] = func(pts time.Duration, data []byte) {
 
 				au, err := h264.AnnexBUnmarshal(data)
+				//au, err := h264.AVCCUnmarshal(data)
 
 				if err != nil {
 					s.Log(logger.Warn, "%v", err)
@@ -218,52 +220,28 @@ func (s *h264udpSource) run(ctx context.Context, cnf *conf.PathConf, _ chan *con
 			s.Log(logger.Info, "ready: %s", sourceMediaInfo(medias))
 
 			stream = res.stream
-			//var timedec *mpegts.TimeDecoder
-			var offset int = 0
-			//var end int = 0
-			var h264Packet [1024 * 20]byte
-			//var pTime time.Time
-			//pTime = time.Now()
-			//var dts time.Duration
+
 			for {
 				pc.SetReadDeadline(time.Now().Add(time.Duration(s.readTimeout)))
 				input := make([]byte, (1024 * 20))
 				n, _, err := pc.ReadFrom(input[0:])
-
 				if err != nil {
 					return err
 				}
-				//s.Log(logger.Info, "read: %d from %s", n, addr)
-				if input[3] == 0x01 && input[2] == 0x00 && input[1] == 0x00 && input[0] == 0x00 {
 
-					if offset > 0 {
-						//s.Log(logger.Info, "full packet received")
-						/* tmp := uint64(h264Packet[11])<<56 | uint64(h264Packet[10])<<48 | uint64(h264Packet[9])<<40 | uint64(h264Packet[8])<<32 |
-						uint64(h264Packet[7])<<24 | uint64(h264Packet[6])<<16 | uint64(h264Packet[5])<<8 | uint64(h264Packet[4]) */
-						//dts := time.Duration(tmp) * time.Microsecond
-
-						//pTime.UnmarshalBinary(h264Packet[8:])
-						//fmt.Println(dts.String())
-						cb, ok := mediaCallbacks[12345]
-						if !ok {
-							continue
-						}
-						//nalus, err := h264.AnnexBUnmarshal(buf[9:])
-						//fmt.Println(dts.String())
-						dts := time.Duration(1) * time.Microsecond
-						//t := time.Now()
-						//dts = t.Sub(pTime)
-						//pTime = t
-						cb(dts, h264Packet[0:offset])
-
-					}
-					copy(h264Packet[0:], input[:])
-					offset = 0
-				} else {
-					copy(h264Packet[offset:], input[:])
+				cb, ok := mediaCallbacks[12345]
+				if !ok {
+					continue
 				}
-
-				offset += n
+				//dts := time.Duration(3000*fNumber) * time.Microsecond
+				var pts time.Duration
+				if timedec == nil {
+					timedec = mpegts.NewTimeDecoder(time.Now().UnixMilli())
+					pts = 0
+				} else {
+					pts = timedec.Decode(time.Now().UnixMilli())
+				}
+				cb(pts, input[0:n])
 
 				/* var data *DemuxerData
 				//data, err := dem.NextData()

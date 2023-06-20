@@ -50,7 +50,7 @@ func newPeerConnection(
 
 	if videoCodec != "" || audioCodec != "" {
 		switch videoCodec {
-		case "av1":
+		/* case "av1":
 			err := mediaEngine.RegisterCodec(
 				webrtc.RTPCodecParameters{
 					RTPCodecCapability: webrtc.RTPCodecCapability{
@@ -105,7 +105,7 @@ func newPeerConnection(
 				webrtc.RTPCodecTypeVideo)
 			if err != nil {
 				return nil, err
-			}
+			} */
 
 		case "h264":
 			err := mediaEngine.RegisterCodec(

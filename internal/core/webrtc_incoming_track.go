@@ -36,7 +36,7 @@ func newWebRTCIncomingTrack(
 	}
 
 	switch track.Codec().MimeType {
-	case webrtc.MimeTypeAV1:
+	/* case webrtc.MimeTypeAV1:
 		t.mediaType = media.TypeVideo
 		t.format = &formats.AV1{
 			PayloadTyp: uint8(track.PayloadType()),
@@ -52,7 +52,7 @@ func newWebRTCIncomingTrack(
 		t.mediaType = media.TypeVideo
 		t.format = &formats.VP8{
 			PayloadTyp: uint8(track.PayloadType()),
-		}
+		} */
 
 	case webrtc.MimeTypeH264:
 		t.mediaType = media.TypeVideo
