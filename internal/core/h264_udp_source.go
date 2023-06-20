@@ -230,6 +230,7 @@ func (s *h264udpSource) run(ctx context.Context, cnf *conf.PathConf, _ chan *con
 			/* if !ok {
 				continue
 			} */
+			counter := 0
 			packetBuffer := make([]byte, (0))
 			for {
 				pc.SetReadDeadline(time.Now().Add(time.Duration(s.readTimeout)))
@@ -252,16 +253,19 @@ func (s *h264udpSource) run(ctx context.Context, cnf *conf.PathConf, _ chan *con
 						timedec = mpegts.NewTimeDecoder(time.Now().UnixMilli())
 						pts = 0
 					} else {
-						pts = timedec.Decode(time.Now().UnixMilli())
+						//pts = timedec.Decode(time.Now().UnixMilli())
+						pts = time.Duration(1*counter+1/30*90000) * time.Millisecond
 					}
-					pts = timedec.Decode(time.Now().UnixMilli())
-					//s.Log(logger.Info, "pts %d", pts)
+					//pts = timedec.Decode(time.Now().UnixMilli())
+					s.Log(logger.Info, "pts %d", pts)
 					cb(pts, packetBuffer[0:lastIndex])
+					//cb(time.Duration(counter)*time.Millisecond, packetBuffer[0:lastIndex])
+					counter++
 					packetBuffer = packetBuffer[lastIndex:]
 				} else {
 					//s.Log(logger.Info, "skipping")
 				}
-
+				//s.Log(logger.Info, "len %d", len(packetBuffer))
 				/* copy(packetBuffer[end:], input[0:n])
 				end += n
 				cb(pts, packetBuffer[0:end]) */
