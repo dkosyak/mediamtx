@@ -223,7 +223,7 @@ func (s *h264udpSource) run(ctx context.Context, cnf *conf.PathConf, _ chan *con
 			stream = res.stream
 			var pts time.Duration
 
-			startH264Header := [3]byte{0x00, 0x00, 0x01}
+			startH264Header := [4]byte{0x00, 0x00, 0x00, 0x01}
 			//var start int = 0
 			//var end int = 0
 			cb, _ := mediaCallbacks[12345]
@@ -234,15 +234,37 @@ func (s *h264udpSource) run(ctx context.Context, cnf *conf.PathConf, _ chan *con
 			packetBuffer := make([]byte, (0))
 			for {
 				pc.SetReadDeadline(time.Now().Add(time.Duration(s.readTimeout)))
-				input := make([]byte, (1024 * 10))
+				input := make([]byte, (1024 * 50))
 				n, _, err := pc.ReadFrom(input[0:])
 
 				if err != nil {
 					return err
 				}
 
-				//cb(pts, input[0:n])
-				//continue
+				if timedec == nil {
+					timedec = mpegts.NewTimeDecoder(time.Now().UnixMilli())
+					pts = 0
+				} else {
+					pts = timedec.Decode(time.Now().UnixMilli())
+					//pts = time.Duration(1*counter+1/30*90000) * time.Millisecond
+				}
+				/* index := 0
+				sl := input[:n]
+				for true {
+
+					index = bytes.Index(sl, startH264Header[0:])
+					if index >= 0 {
+						index += len(startH264Header)
+						typeNal := h264.NALUType(sl[index] & 0x1F)
+						sl = sl[index : n-index]
+						s.Log(logger.Info, "Type %s", typeNal)
+					} else {
+						break
+					}
+				}
+
+				cb(pts, input[0:n])
+				continue */
 
 				//split := bytes.Split(packetBuffer[0:], startH264Header[0:])
 				//s.Log(logger.Info, "split count %d", len(split))
@@ -253,16 +275,16 @@ func (s *h264udpSource) run(ctx context.Context, cnf *conf.PathConf, _ chan *con
 						timedec = mpegts.NewTimeDecoder(time.Now().UnixMilli())
 						pts = 0
 					} else {
-						//pts = timedec.Decode(time.Now().UnixMicro())
+						pts = timedec.Decode(time.Now().UnixMilli())
 						//pts = time.Duration(1*counter+1/30*90000) * time.Millisecond
 					}
 					//pts = timedec.Decode(time.Now().UnixMilli())
-					s.Log(logger.Info, "pts %d", pts)
+					//s.Log(logger.Info, "pts %d", pts)
 					cb(pts, packetBuffer[0:lastIndex])
 					//cb(time.Duration(counter)*time.Millisecond, packetBuffer[0:lastIndex])
 					counter++
 					packetBuffer = packetBuffer[lastIndex:]
-					pts = timedec.Decode(time.Now().UnixMilli())
+					//pts = timedec.Decode(time.Now().UnixMilli())
 				} else {
 					//s.Log(logger.Info, "skipping")
 				}
